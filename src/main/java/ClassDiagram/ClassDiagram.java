@@ -88,30 +88,30 @@ public class ClassDiagram {
         // Class name section with stereotypes
         StringBuilder titleLine = new StringBuilder();
         if (isInterface) {
-            titleLine.append("«interface»\n");
+            titleLine.append("<<interface>>\n");
         } else if (isAbstract) {
-            titleLine.append("«abstract»\n");
+            titleLine.append("<<abstract>>\n");
         }
         titleLine.append(className);
 
         // Top border
-        diagram.append("┌").append("─".repeat(width - 2)).append("┐\n");
+        diagram.append("+").append("-".repeat(width - 2)).append("+\n");
 
         // Class name
-        diagram.append("│").append(centerText(titleLine.toString(), width - 2)).append("│\n");
+        diagram.append("|").append(centerText(titleLine.toString(), width - 2)).append("|\n");
 
         // Separator
-        diagram.append("├").append("─".repeat(width - 2)).append("┤\n");
+        diagram.append("+").append("-".repeat(width - 2)).append("+\n");
 
         // Attributes
         for (ClassAttribute attr : attributes) {
-            diagram.append("│ ").append(attr.toString())
+            diagram.append("| ").append(attr.toString())
                     .append(" ".repeat(width - attr.toString().length() - 3))
-                    .append("│\n");
+                    .append("|\n");
         }
 
         // Separator
-        diagram.append("├").append("─".repeat(width - 2)).append("┤\n");
+        diagram.append("+").append("-".repeat(width - 2)).append("+\n");
 
         // Methods
         for (ClassMethod method : methods) {
@@ -119,31 +119,31 @@ public class ClassDiagram {
             // Handle method wrapping if too long
             if (methodStr.length() > width - 3) {
                 while (methodStr.length() > width - 3) {
-                    diagram.append("│ ").append(methodStr.substring(0, width - 3))
-                            .append("│\n");
+                    diagram.append("| ").append(methodStr.substring(0, width - 3))
+                            .append("|\n");
                     methodStr = "  " + methodStr.substring(width - 3);
                 }
             }
-            diagram.append("│ ").append(methodStr)
+            diagram.append("| ").append(methodStr)
                     .append(" ".repeat(width - methodStr.length() - 3))
-                    .append("│\n");
+                    .append("|\n");
         }
 
         // Bottom border
-        diagram.append("└").append("─".repeat(width - 2)).append("┘\n");
+        diagram.append("+").append("-".repeat(width - 2)).append("+\n");
 
         // Add inheritance relationship
         if (superClass != null) {
-            diagram.append(" ".repeat(width/2 - 1)).append("▲\n");
-            diagram.append(" ".repeat(width/2 - 1)).append("│\n");
+            diagram.append(" ".repeat(width/2 - 1)).append("^\n");
+            diagram.append(" ".repeat(width/2 - 1)).append("|\n");
             diagram.append(" ".repeat(width/2 - superClass.length()/2 - 1))
                     .append(superClass).append("\n");
         }
 
         // Add interface implementations
         if (!interfaces.isEmpty()) {
-            diagram.append(" ".repeat(width/2 - 1)).append("△\n");
-            diagram.append(" ".repeat(width/2 - 1)).append("│\n");
+            diagram.append(" ".repeat(width/2 - 1)).append("^\n");
+            diagram.append(" ".repeat(width/2 - 1)).append("|\n");
             for (String iface : interfaces) {
                 diagram.append(" ".repeat(width/2 - iface.length()/2 - 1))
                         .append(iface).append("\n");

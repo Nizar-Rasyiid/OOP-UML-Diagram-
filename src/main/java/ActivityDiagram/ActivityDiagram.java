@@ -1,4 +1,3 @@
-// File: ActivityDiagram.java
 package ActivityDiagram;
 
 import java.util.*;
@@ -8,6 +7,15 @@ public class ActivityDiagram {
     private Map<String, Node> nodes;
     private String startNodeId;
 
+    // Constants for node types
+    public static final String START = "start";
+    public static final String END = "end";
+    public static final String DECISION = "decision";
+    public static final String MERGE = "merge";
+    public static final String FORK = "fork";
+    public static final String JOIN = "join";
+    public static final String ACTION = "action";
+
     public ActivityDiagram(String name) {
         this.name = name;
         this.nodes = new HashMap<>();
@@ -15,7 +23,7 @@ public class ActivityDiagram {
 
     public void addNode(String id, String type, String label) {
         Node node = new Node(id, type, label);
-        if (type.equals("start")) {
+        if (type.equals(START)) {
             startNodeId = id;
         }
         nodes.put(id, node);
@@ -60,35 +68,30 @@ public class ActivityDiagram {
     }
 
     private String getIndentation(int level) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < level * 2; i++) {
-            sb.append(" ");
-        }
-        return sb.toString();
+        return "  ".repeat(level); // Using repeat method for cleaner code
     }
 
     @Override
     public String toString() {
         calculateLevels();
-
         StringBuilder sb = new StringBuilder();
         sb.append("=== Activity Diagram: ").append(name).append(" ===\n\n");
-
+        
         // Create a map of nodes by level
         Map<Integer, List<Node>> nodesByLevel = new TreeMap<>();
         for (Node node : nodes.values()) {
             nodesByLevel.computeIfAbsent(node.getLevel(), k -> new ArrayList<>()).add(node);
         }
-
+        
         // Display nodes level by level
         for (Map.Entry<Integer, List<Node>> entry : nodesByLevel.entrySet()) {
             for (Node node : entry.getValue()) {
                 // Add indentation based on level
                 sb.append(getIndentation(node.getLevel()));
-
+                
                 // Add node symbol
-                sb.append(node.getSymbol());
-
+                sb.append(getNodeSymbol(node));
+                
                 // Add arrows to outgoing nodes
                 if (!node.getOutgoing().isEmpty()) {
                     sb.append("\n");
@@ -96,8 +99,8 @@ public class ActivityDiagram {
                         Node target = nodes.get(targetId);
                         if (target != null) {
                             sb.append(getIndentation(node.getLevel() + 1));
-                            sb.append("↓ ");
-                            sb.append("[").append(target.getId()).append("]");
+                            sb.append("-> ");
+                            sb.append(getNodeSymbol(target));
                             sb.append("\n");
                         }
                     }
@@ -106,7 +109,25 @@ public class ActivityDiagram {
                 }
             }
         }
-
         return sb.toString();
+    }
+
+    private String getNodeSymbol(Node node) {
+        switch (node.getType().toLowerCase()) {
+            case START:
+                return "(*)";
+            case END:
+                return "(/)";
+            case DECISION:
+                return "<>";
+            case MERGE:
+                return "<>";
+            case FORK:
+                return "===";
+            case JOIN:
+                return "===";
+            default:
+                return "[" + node.getLabel() + "]";
+        }
     }
 }
