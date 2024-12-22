@@ -28,6 +28,7 @@ public class UseCaseDiagram {
         relationships.add(new Relationship(actor, useCase, type));
     }
 
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -58,6 +59,7 @@ public class UseCaseDiagram {
 
         return sb.toString();
     }
+
 
     private void drawDiagramContent(StringBuilder sb, int maxActorWidth, int maxUseCaseWidth, int totalWidth) {
         int height = Math.max(actors.size() * 6, useCases.size() * 3);
@@ -98,7 +100,6 @@ public class UseCaseDiagram {
             sb.append(" │\n");
         }
     }
-
     private void drawActorHead(StringBuilder sb, int width, int index) {
         sb.append(String.format("%-" + width + "s", "     o     "));
     }
@@ -137,10 +138,12 @@ public class UseCaseDiagram {
     }
 
     private String centerText(String text, int width) {
-        int padding = (width - text.length()) / 2;
+        if (text.length() >= width) {
+            return text;
+        }
+        int padding = Math.max((width - text.length()) / 2, 0);
         return " ".repeat(padding) + text + " ".repeat(width - text.length() - padding);
     }
-
     // Getters and setters
     public String getName() {
         return name;
